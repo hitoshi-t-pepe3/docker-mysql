@@ -24,15 +24,14 @@ RUN mkdir -p \
   /var/log/mysql \
   /var/log/supervisor
 
-RUN /usr/bin/mysqld_safe
 
 RUN \
-  echo "NETWORKING=yes" > /etc/sysconfig/network && \
-  sed -i -e "s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" \
-    /etc/my.cnf
+  service mysqld start && \ 
+    sleep 5s && \
+    mysql -e "GRANT ALL ON *.* to 'root'@'%'; FLUSH PRIVILEGES" 
 
 EXPOSE 3306
 
-VOLUME /var/lib/mysql
+# VOLUME /var/lib/mysql
 
 CMD ["/usr/bin/mysqld_safe"]
