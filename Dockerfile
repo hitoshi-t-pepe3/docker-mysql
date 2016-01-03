@@ -24,14 +24,21 @@ RUN mkdir -p \
   /var/log/mysql \
   /var/log/supervisor
 
-
 RUN \
-  service mysqld start && \ 
-    sleep 5s && \
-    mysql -e "GRANT ALL ON *.* to 'root'@'%'; FLUSH PRIVILEGES" 
+  rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql
+
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+# RUN \
+#   service mysqld start && \ 
+#     sleep 5s && \
+#     mysql -e "GRANT ALL ON *.* to 'root'@'%'; FLUSH PRIVILEGES" 
 
 EXPOSE 3306
 
 # VOLUME /var/lib/mysql
 
-CMD ["/usr/bin/mysqld_safe"]
+# CMD ["/usr/bin/mysqld_safe"]
+CMD ["mysqld_safe"]
